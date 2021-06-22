@@ -11,10 +11,10 @@ def get_session(token):
         data = jwt.decode(
             token,
             settings.JWT_SECRET,
-            algorithm=settings.JWT_ALGORITHM
+            settings.JWT_ALGORITHM
         )
         return data
-    except Exception:
+    except (jwt.DecodeError, jwt.ExpiredSignatureError):
         raise Exception(NOT_LOGGED_IN)
 
 def json_response_error(message):

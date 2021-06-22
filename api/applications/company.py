@@ -14,10 +14,10 @@ class CompanyApp(Application):
             Company.objects.create(
                 owner_id=self.__id,
                 name=data['name'],
-                deskripsi=data['deskripsi'],
+                description=data['description'],
                 email=data['email'],
                 kota=data['kota'],
-                no_hp=data['kota']
+                no_hp=data['no_hp']
             )
         except Exception:
             raise BaseError(DB_ERROR)

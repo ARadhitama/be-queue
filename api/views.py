@@ -11,8 +11,8 @@ import json
 class QueueUserView(View):
     # get queue number 
     def get(self, request):
-        print("test")
         try:
+            print(request.headers.get('authorization', None))
             user_data = get_session(request.headers.get('authorization', None))
         except:
             return json_response_error(NOT_LOGGED_IN)
@@ -30,13 +30,16 @@ class QueueUserView(View):
     
     # queue to a service
     def post(self, request):
-        user_data = get_session(request.headers.get('authorization', None))
+        try:
+            user_data = get_session(request.headers.get('authorization', None))
+        except:
+            return json_response_error(NOT_LOGGED_IN)
 
         try:
             data = json.loads(request.body)
             service_id = data['service_id']
         except Exception:
-            return JsonResponse(INVALID_PARAM)
+            return json_response_error(INVALID_PARAM)
 
         return JsonResponse({"queue_number": 10})
 
@@ -44,13 +47,16 @@ class QueueUserView(View):
 class QueueServiceView(View):
     # get current queue
     def post(self, request):
-        user_data = get_session(request.headers.get('authorization', None))
+        try:
+            user_data = get_session(request.headers.get('authorization', None))
+        except:
+            return json_response_error(NOT_LOGGED_IN)
 
         try:
             data = json.loads(request.body)
             service_id = data['service_id']
         except Exception:
-            return JsonResponse({'message': INVALID_PARAM})
+            return json_response_error(INVALID_PARAM)
 
         user_data = {
             "id": 1,
@@ -68,11 +74,43 @@ class QueueServiceView(View):
         return JsonResponse(result, safe=False)
 
     
-class GetAllServiceView(View):
+class GetAllServiceOnLocationView(View):
     # get service based on location
     def get(self, request):
-        user_data = get_session(request.headers.get('authorization', None))
+        try:
+            user_data = get_session(request.headers.get('authorization', None))
+        except:
+            return json_response_error(NOT_LOGGED_IN)
         
+        service_data = {
+            "service_id": 1,
+            "service_name": "sdadsad",
+            "service_image": "sdasdsad"
+        }
+
+        result = [
+            service_data,
+            service_data,
+            service_data
+        ]
+
+        return JsonResponse(result, safe=False)
+
+
+class GetAllServiceOnCompanyView(View):
+    # get service based on company
+    def get(self, request):
+        try:
+            user_data = get_session(request.headers.get('authorization', None))
+        except:
+            return json_response_error(NOT_LOGGED_IN)
+        
+        try:
+            data = json.loads(request.body)
+            company_id = data['company_id']
+        except Exception:
+            return json_response_error(INVALID_PARAM)
+
         service_data = {
             "service_id": 1,
             "service_name": "sdadsad",
@@ -91,13 +129,16 @@ class GetAllServiceView(View):
 class GetServiceDataView(View):
     # get clicked service data
     def get(self, request):
-        user_data = get_session(request.headers.get('authorization', None))
+        try:
+            user_data = get_session(request.headers.get('authorization', None))
+        except:
+            return json_response_error(NOT_LOGGED_IN)
         
         try:
             data = json.loads(request.body)
             service_id = data['service_id']
         except Exception:
-            return JsonResponse({'message': INVALID_PARAM})
+            return json_response_error(INVALID_PARAM)
 
         result = {
             "service_name": "asdasdsa",
@@ -117,7 +158,11 @@ class GetServiceDataView(View):
 class CreateServiceView(View):
     # make new service, post category, ownner, company
     def post(self, request):
-        user_data = get_session(request.headers.get('authorization', None))
+        try:
+            user_data = get_session(request.headers.get('authorization', None))
+        except:
+            return json_response_error(NOT_LOGGED_IN)
+
         try:
             data = json.loads(request.body)
             company_id = data['company_id'],
@@ -128,18 +173,51 @@ class CreateServiceView(View):
             open_time = data['open_time'],
             close_time = data['close_time'],
         except Exception:
-            return JsonResponse({'message': INVALID_PARAM})
-
+            return json_response_error(INVALID_PARAM)
+        
         return JsonResponse({"message": SUCCESS})
 
 
 class CompanyView(View):
+    # get user company
     def get(self, request):
-        user_data = get_session(request.headers.get('authorization', None))
-        # get user company
-        
+        try:
+            user_data = get_session(request.headers.get('authorization', None))
+        except:
+            return json_response_error(NOT_LOGGED_IN)
+
+        company_data = {
+            "id": 1,
+            "name": "asdasdd",
+            "description": "adasdsadsad",
+            "email": "adsadasd",
+            "kota": "asdasd",
+            "no_hp": "0123123213"
+        }
+
+        result = [
+            company_data,
+            company_data,
+            company_data
+        ]
+
         return JsonResponse(result, safe=False)
+    # make new company
     def post(self, request):
-        user_data = get_session(request.headers.get('authorization', None))
-        # make new company
-        return 
+        try:
+            user_data = get_session(request.headers.get('authorization', None))
+        except:
+            return json_response_error(NOT_LOGGED_IN)
+        
+        try:
+            data = json.loads(request.body)
+            owner_id = user_data['id'],
+            name = data['name'],
+            description = data['description'],
+            email=data['email'],
+            kota=data['kota'],
+            no_hp=['no_hp']
+        except Exception:
+            return json_response_error(INVALID_PARAM)
+
+        return JsonResponse({"message": SUCCESS})
