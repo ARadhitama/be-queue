@@ -1,6 +1,10 @@
 from oauth.models import *
 from api.models import *
+from django.conf import settings
+from api.global_var import *
+from django.http import JsonResponse
 
+import jwt
 
 def get_session(token):
     try:
@@ -10,6 +14,8 @@ def get_session(token):
             algorithm=settings.JWT_ALGORITHM
         )
         return data
-    except Exception as e:
-        raise Exception(str(e))
-        return None
+    except Exception:
+        raise Exception(NOT_LOGGED_IN)
+
+def json_response_error(message):
+    return JsonResponse({"message": message}, status=400)

@@ -31,7 +31,7 @@ def login_account(request):
 
     jwt_token = jwt.encode(payload, settings.JWT_SECRET, settings.JWT_ALGORITHM)
 
-    return JsonResponse({'token': jwt_token.decode('utf-8')}, status=200)
+    return JsonResponse({'token': jwt_token}, status=200)
 
 
 @csrf_exempt
@@ -58,14 +58,13 @@ def create_new_user(request):
         username = data['username']
         password = data['password']
         email = data['email']
-        provinsi = data['provinsi']
         kota = data['kota']
 
     except Exception as e:
         return JsonResponse({'message': str(e)})
 
     try:
-        UserProfile.objects.create_user(username, password, email, provinsi, kota)
+        UserProfile.objects.create_user(username, password, email, kota)
     except IntegrityError:
         return JsonResponse({"message": "User already exist"}, status=400)
 

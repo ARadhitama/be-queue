@@ -80,9 +80,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'tugas_akhir_queue',
         'USER': 'postgres',
-        'PASSWORD': 'ariasatya',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
-        'PORT': 5432,
+        'PORT': 9000,
     }
 }
 

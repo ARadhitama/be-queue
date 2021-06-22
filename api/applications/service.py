@@ -2,7 +2,7 @@ from .base import Application, BaseError
 from .user import UserApp
 
 from api.global_var import *
-from api.models import Service
+from api.models import Service, ServiceCategory
 
 class ServiceApp(Application):
     def __init__(self, id):
@@ -15,7 +15,7 @@ class ServiceApp(Application):
                 company_id=company_id,
                 category_id=category_id,
                 name=data['name'],
-                deskripsi=data['deskripsi'],
+                description=data['description'],
                 price=data['price'],
                 open_time=data['open_time'],
                 close_time=data['close_time']

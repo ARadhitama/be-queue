@@ -4,8 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, username, password, email, provinsi, kota, **extra_fields):
-        user = self.model(username=username, email=email, provinsi=provinsi, kota=kota, **extra_fields)
+    def create_user(self, username, password, email, kota, **extra_fields):
+        user = self.model(username=username, email=email, kota=kota, **extra_fields)
         user.set_password(password)
         user.save()
 
