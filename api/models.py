@@ -10,18 +10,6 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class Provinsi(BaseModel):
-    name = models.CharField(max_length=50)
-
-
-class Kota(BaseModel):
-    provinsi = models.ForeignKey(
-        Provinsi,
-        on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=50)
-
-
 class ServiceCategory(models.Model):
     category = models.CharField(max_length=20)
 
@@ -34,10 +22,9 @@ class Company(BaseModel):
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50)
     address = models.TextField()
-    kota = models.ForeignKey(
-        Kota,
-        on_delete=models.CASCADE
-    )
+    kabupaten = models.IntegerField(default=0)
+    kecamatan = models.IntegerField(default=0)
+    kelurahan = models.IntegerField(default=0)
     phone_number = models.CharField(max_length=20)
     description = models.TextField()
     

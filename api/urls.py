@@ -11,5 +11,8 @@ urlpatterns = [
     path('service_data/', csrf_exempt(views.GetServiceDataView.as_view())),
     path('create_service/', csrf_exempt(views.CreateServiceView.as_view())),
     path('company/', csrf_exempt(views.CompanyView.as_view())),
-
+    path('kabupaten/', csrf_exempt(views.KabupatenView.as_view())),
+    path('kecamatan/', csrf_exempt(views.KecamatanView.as_view())),
+    path('kelurahan/', csrf_exempt(views.KelurahanView.as_view())),
+    path('test/', csrf_exempt(views.TestView.as_view()))
 ]

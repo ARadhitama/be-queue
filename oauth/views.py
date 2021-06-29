@@ -27,7 +27,7 @@ def login_account(request):
     payload = {
         'id': user_check.id,
         'username': user_check.username,
-        'kota': "asdsadsadsa"
+        'kota': 1
     }
 
     jwt_token = jwt.encode(payload, settings.JWT_SECRET, settings.JWT_ALGORITHM)

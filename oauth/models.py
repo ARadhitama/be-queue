@@ -13,7 +13,9 @@ class UserProfile(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     email = models.EmailField(max_length=50)
-    kota = models.IntegerField(default=0)
+    kabupaten = models.IntegerField(default=0)
+    kecamatan = models.IntegerField(default=0)
+    kelurahan = models.IntegerField(default=0)
     status_ban = models.BooleanField(default=False)
     foto_ktp = models.CharField(max_length=250, blank=True, null=True)
 

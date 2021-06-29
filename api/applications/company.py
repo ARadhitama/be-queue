@@ -19,5 +19,9 @@ class CompanyApp(Application):
                 kota=data['kota'],
                 no_hp=data['no_hp']
             )
+            return True
         except Exception:
             raise BaseError(DB_ERROR)
+    
+    def get_all_company_data_dict(self):
+        return Company.objects.filter(owner_id=self.__id).values().all()
