@@ -9,12 +9,12 @@ class ServiceApp(Application):
         self.__id = id
         self.__user = UserApp(id)
 
-    def create_service(self, category_id, company_id, data):
+    def create_service(self, data):
         try:
             Service.objects.create(
-                company_id=company_id,
-                category_id=category_id,
-                name=data['name'],
+                company_id=data['company_id'],
+                category_id=data['category_id'],
+                name=data['service_name'],
                 description=data['description'],
                 price=data['price'],
                 open_time=data['open_time'],

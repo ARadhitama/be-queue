@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
 
-from api.db_manager import get_session, json_response_error
+from api.db_manager import get_session, is_valid_category, json_response_error
 from api.global_var import *
 from api.external_api.raja_api import *
 from api.applications.company import CompanyApp
@@ -178,7 +178,7 @@ class GetServiceDataView(View):
         # return JsonResponse(result, safe=False)
     
 
-class CreateServiceView(View):
+class CreateServiceView(View):  #DONE
     # make new service, post category, ownner, company
     def post(self, request):
         try:
@@ -197,20 +197,24 @@ class CreateServiceView(View):
             close_time = data['close_time'],
         except Exception:
             return json_response_error(INVALID_PARAM)
+    
+        # check is company owner
+        company_app = CompanyApp(user_data['id'])
+        is_owner = company_app.is_company_owner(data['company_id'])
+
+        if not is_owner:
+            return json_response_error("not_owner")
         
+        # check valid category
+        valid_category = is_valid_category(data['category_id'])
+        if not valid_category:
+            return json_response_error("wrong_category")
+
         created = False
 
         service_app = ServiceApp(user_data['id'])
         try:
-            created = service_app.create_service(
-                company_id,
-                category_id,
-                service_name,
-                description,
-                price,
-                open_time,
-                close_time
-            )
+            created = service_app.create_service(data)
         except Exception as e:
             return json_response_error(e)
 
@@ -220,7 +224,7 @@ class CreateServiceView(View):
             return json_response_error(DB_ERROR)
 
 
-class CompanyView(View):
+class CompanyView(View):    # DONE
     # get user company
     def get(self, request):
         try:
@@ -230,25 +234,10 @@ class CompanyView(View):
 
         company_app = CompanyApp(user_data['id'])
         try:
-            result = company_app.get_all_company_data_dict()
+            result = company_app.get_all_company_data_arr()
         except Exception:
             return json_response_error(DB_ERROR)
-
-        # company_data = {
-        #     "id": 1,
-        #     "name": "asdasdd",
-        #     "description": "adasdsadsad",
-        #     "email": "adsadasd",
-        #     "kota": "asdasd",
-        #     "no_hp": "0123123213"
-        # }
-
-        # result = [
-        #     company_data,
-        #     company_data,
-        #     company_data
-        # ]
-
+        
         return JsonResponse(result, safe=False)
 
     # make new company
@@ -257,26 +246,32 @@ class CompanyView(View):
             user_data = get_session(request.headers.get('authorization', None))
         except:
             return json_response_error(NOT_LOGGED_IN)
-        
+
         try:
             data = json.loads(request.body)
             owner_id = user_data['id'],
-            name = data['name'],
-            description = data['description'],
+            name=data['name'],
             email=data['email'],
-            kota=data['kota'],
-            no_hp=['no_hp']
+            address=data['address'],
+            kabupaten_id=data['kabupaten_id'],
+            kabupaten_name=data['kabupaten_name'],
+            kecamatan_id=data['kecamatan_id'],
+            kecamatan_name=data['kecamatan_name'],
+            kelurahan_id=data['kelurahan_id'],
+            kelurahan_name=data['kelurahan_name'],
+            phone_number=data['phone_number'],
+            description=data['description'],
         except Exception:
             return json_response_error(INVALID_PARAM)
 
         created = False
-
+        
         company_app = CompanyApp(user_data['id'])
         try:
             created = company_app.create_company(data)
         except Exception as e:
             return json_response_error(e)
-        print(created)
+        
         if created:  
             return JsonResponse({"message": SUCCESS})
         else:
