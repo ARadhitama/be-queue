@@ -47,6 +47,7 @@ class Service(BaseModel):
     price = models.IntegerField()
     open_time = models.TimeField()
     close_time = models.TimeField()
+    image = models.CharField(max_length=250, null=True)
 
 
 class ServiceQueue(BaseModel):

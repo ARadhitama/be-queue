@@ -30,8 +30,26 @@ class ServiceApp(Application):
     def get_service_detail_dict(self, service_id):
         return Service.objects.filter(id=service_id).values().all()
 
-    def get_all_service_on_company_dict(self, company_id):
-        return Service.objects.filter(company_id=company_id).values().all()
+    def get_all_service_on_company_arr(self, company_id):
+        try:
+            service_arr = Service.objects.filter(company_id=company_id).values().all()
+        except Exception:
+            raise BaseError(DB_ERROR)
+        
+        if not service_arr:
+            raise BaseError("no_company")
+
+        result = []
+
+        for service in service_arr:
+            service_data = {
+                "service_id": service['id'],
+                "service_name": service['name'],
+                "service_image": service['image']
+            }
+            result.append(service_data)
+
+        return result
 
     def get_all_service_on_location_dict(self, kota):
         return Service.objects.filter(kota=kota).values().all()

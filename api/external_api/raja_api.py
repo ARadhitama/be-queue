@@ -1,6 +1,6 @@
 import requests
 
-api_token = "rY31CW7Jujq8QKYhfFR22EYcl0mcbNcT5rFvOj5VWuQtcXkFnr" # GET https://x.rajaapi.com/poe
+api_token = "Rhvsfu1MiOFbRTPAOtpPaRFhzoogGEDs8nXFi8Gb8hqKU33oXe" # GET https://x.rajaapi.com/poe
 api_url = "https://x.rajaapi.com/"
 jakarta_id = 31
 

@@ -106,7 +106,7 @@ class GetAllServiceOnLocationView(View):
         return JsonResponse(result, safe=False)
 
 
-class GetAllServiceOnCompanyView(View):
+class GetAllServiceOnCompanyView(View): # DONE
     # get service based on company
     def get(self, request):
         try:
@@ -122,28 +122,16 @@ class GetAllServiceOnCompanyView(View):
 
         service_app = ServiceApp(user_data['id'])
         try:
-            result = service_app.get_all_service_on_company_dict(company_id)
-        except Exception:
-            return json_response_error(DB_ERROR)
-
-        # service_data = {
-        #     "service_id": 1,
-        #     "service_name": "sdadsad",
-        #     "service_image": "sdasdsad"
-        # }
-
-        # result = [
-        #     service_data,
-        #     service_data,
-        #     service_data
-        # ]
+            result = service_app.get_all_service_on_company_arr(data['company_id'])
+        except Exception as e:
+            return json_response_error(e.message)
 
         return JsonResponse(result, safe=False)
 
 
-class GetServiceDataView(View):
+class GetServiceDataView(View): # DONE
     # get clicked service data
-    def get(self, request):
+    def post(self, request):
         try:
             user_data = get_session(request.headers.get('authorization', None))
         except:
@@ -157,25 +145,14 @@ class GetServiceDataView(View):
 
         service_app = ServiceApp(user_data['id'])
         try:
-            service_data = service_app.get_service_detail_dict(service_id)
+            service_data = service_app.get_service_detail_dict(data['service_id'])
         except Exception:
             return json_response_error(DB_ERROR)
+        
+        if not service_data:
+            return json_response_error("no_available_services")
 
-        return service_data[0]
-
-        # result = {
-        #     "service_name": "asdasdsa",
-        #     "service_phone": "081232113",
-        #     "service_address": "asdasdasdasdada",
-        #     "service_price" : 100000,
-        #     "service_description": "adasdasdasd",
-        #     "service_open_time": "12.30",
-        #     "service_close_time": "15.30",
-        #     "current_queue_number": 5,
-        #     "last_queue_number": 10
-        # }
-
-        # return JsonResponse(result, safe=False)
+        return JsonResponse(service_data[0], safe=False)
     
 
 class CreateServiceView(View):  #DONE
