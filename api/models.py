@@ -48,7 +48,12 @@ class Service(BaseModel):
     open_time = models.TimeField()
     close_time = models.TimeField()
     image = models.CharField(max_length=250, null=True)
-
+    kabupaten_id = models.IntegerField(default=0)
+    kabupaten_name = models.CharField(max_length=50, null=True)
+    kecamatan_id = models.IntegerField(default=0)
+    kecamatan_name = models.CharField(max_length=50, null=True)
+    kelurahan_id = models.IntegerField(default=0)
+    kelurahan_name = models.CharField(max_length=50, null=True)
 
 class ServiceQueue(BaseModel):
     service = models.ForeignKey(

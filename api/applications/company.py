@@ -56,6 +56,10 @@ class CompanyApp(Application):
 
         return result
 
+    def get_company_data(self, company_id):
+        return Company.objects.filter(id=company_id).first()
+
+
     def is_company_owner(self, company_id):
         company = Company.objects.filter(id=company_id, owner_id=self.__id).values().all()
 

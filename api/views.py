@@ -77,31 +77,33 @@ class QueueServiceView(View):
         return JsonResponse(result, safe=False)
 
     
-class GetAllServiceOnLocationView(View):
-    # get service based on location
-    def get(self, request):
+class GetAllServiceOnLocationView(View):    # DONE
+    # get service based on location 
+    def post(self, request):
         try:
             user_data = get_session(request.headers.get('authorization', None))
         except:
             return json_response_error(NOT_LOGGED_IN)
-        
+        print(user_data)
+        try:
+            data = json.loads(request.body)
+            category_id = data['category_id']
+            filter = data['filter']
+        except Exception:
+            return json_response_error(INVALID_PARAM)
+
         service_app = ServiceApp(user_data['id'])
         try:
-            result = service_app.get_all_service_on_location_dict(user_data['kota'])
-        except Exception:
-            return json_response_error(DB_ERROR)
-
-        # service_data = {
-        #     "service_id": 1,
-        #     "service_name": "sdadsad",
-        #     "service_image": "sdasdsad"
-        # }
-        
-        # result = [
-        #     service_data,
-        #     service_data,
-        #     service_data
-        # ]
+            if filter == 'kabupaten':
+                result = service_app.get_all_service_on_location_arr(data['category_id'], user_data['kabupaten'], data['filter'])
+            elif filter == 'kecamatan':
+                result = service_app.get_all_service_on_location_arr(data['category_id'], user_data['kecamatan'], data['filter'])
+            elif filter == 'kelurahan':
+                result = service_app.get_all_service_on_location_arr(data['category_id'], user_data['kelurahan'], data['filter'])
+            else:
+                return json_response_error("invalid_location")
+        except Exception as e:
+            return json_response_error(e.message)
 
         return JsonResponse(result, safe=False)
 

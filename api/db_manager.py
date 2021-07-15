@@ -17,8 +17,10 @@ def get_session(token):
     except (jwt.DecodeError, jwt.ExpiredSignatureError):
         raise Exception(NOT_LOGGED_IN)
 
+
 def json_response_error(message):
     return JsonResponse({"message": message}, status=400)
+
 
 def is_valid_category(category_id):
     category = ServiceCategory.objects.filter(id=category_id).values().all()
