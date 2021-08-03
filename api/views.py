@@ -1,3 +1,5 @@
+from api.applications.base import BaseError
+from api.applications.queue import QueueApp
 from django.db import reset_queries
 from django.shortcuts import render
 from django.views import View
@@ -15,20 +17,30 @@ class QueueUserView(View):
     # get queue number 
     def get(self, request):
         try:
-            print(request.headers.get('authorization', None))
             user_data = get_session(request.headers.get('authorization', None))
         except:
             return json_response_error(NOT_LOGGED_IN)
         
-        result = {
-            "service_name": "asdasdsa",
-            "service_phone": "081232113",
-            "service_address": "asdasdasdasdada",
-            "service_price" : 100000,
-            "service_description": "adasdasdasd",
-            "current_queue_number": 3,
-            "user_queue_number": 5
-        }
+        try:
+            data = json.loads(request.body)
+            service_id = data['service_id']
+        except Exception:
+            return json_response_error(INVALID_PARAM)
+        
+        queue_app = QueueApp(user_data['id'])
+
+        try:
+            result = queue_app.get_user_queue(service_id)
+        except Exception as e:
+            return json_response_error(e)
+
+        queue_app = QueueApp(user_data['id'])
+
+        try:
+            result = queue_app.get_user_queue(data['service_id'])
+        except Exception as e:
+            return json_response_error(e)
+
         return JsonResponse(result, safe=False)
     
     # queue to a service
@@ -44,10 +56,17 @@ class QueueUserView(View):
         except Exception:
             return json_response_error(INVALID_PARAM)
 
-        return JsonResponse({"queue_number": 10})
+        queue_app = QueueApp(user_data['id'])
+
+        try:
+            result = queue_app.queue_to_service(data['service_id'])
+        except Exception as e:
+            return json_response_error(e)
+
+        return JsonResponse({"queue_number": result})
 
 
-class QueueServiceView(View):
+class QueueServiceView(View): # DONE
     # get current queue
     def post(self, request):
         try:
@@ -61,18 +80,12 @@ class QueueServiceView(View):
         except Exception:
             return json_response_error(INVALID_PARAM)
 
-        user_data = {
-            "id": 1,
-            "name": "asdadads",
-            "number": 5
-        }
-
-        result = [
-            user_data,
-            user_data,
-            user_data,
-            user_data,
-        ]
+        queue_app = QueueApp(user_data['id'])
+        
+        try:
+            result = queue_app.get_current_queue(data['service_id'])
+        except Exception as e:
+            return json_response_error(e)
 
         return JsonResponse(result, safe=False)
 

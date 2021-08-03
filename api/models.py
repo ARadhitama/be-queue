@@ -47,6 +47,7 @@ class Service(BaseModel):
     price = models.IntegerField()
     open_time = models.TimeField()
     close_time = models.TimeField()
+    address = models.TextField(null=True)
     image = models.CharField(max_length=250, null=True)
     kabupaten_id = models.IntegerField(default=0)
     kabupaten_name = models.CharField(max_length=50, null=True)
