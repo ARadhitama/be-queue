@@ -23,13 +23,12 @@ class QueueApp(Application):
     def get_current_queue(self, service_id):
         try:
             queue = ServiceQueue.objects.filter(service_id=service_id, completed=False).last()
-            user_data = UserProfile.objects.filter(id=queue.user_id).first()
         except Exception:
             raise BaseError(DB_ERROR)
 
         result = {
             "queue_id": queue.id,
-            "foto_ktp": user_data.foto_ktp,
+            "name": queue.user__name,
             "queue_number": queue.number
         }
         

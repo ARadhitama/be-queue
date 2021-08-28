@@ -69,12 +69,12 @@ def create_new_user(request):
         kabupaten = data['kabupaten']
         kecamatan = data['kecamatan']
         kelurahan = data['kelurahan']
-
+        tipe_akun = data['tipe_akun']
     except Exception as e:
         return JsonResponse({'message': str(e)})
 
     try:
-        UserProfile.objects.create_user(username, password, email, kabupaten, kecamatan, kelurahan)
+        UserProfile.objects.create_user(username, password, email, kabupaten, kecamatan, kelurahan, tipe_akun)
     except IntegrityError:
         return JsonResponse({"message": "User already exist"}, status=400)
 

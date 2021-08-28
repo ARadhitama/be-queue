@@ -8,14 +8,12 @@ from django.http import JsonResponse
 from api.db_manager import get_session, is_valid_category, json_response_error
 from api.global_var import *
 from api.external_api.raja_api import *
-from api.applications.company import CompanyApp
 from api.applications.service import ServiceApp
 
 import json
 
-class QueueUserView(View):
-    # get queue number 
-    def get(self, request):
+class CheckQueueView(View):
+    def post(self, request):
         try:
             user_data = get_session(request.headers.get('authorization', None))
         except:
@@ -34,15 +32,9 @@ class QueueUserView(View):
         except Exception as e:
             return json_response_error(e)
 
-        queue_app = QueueApp(user_data['id'])
-
-        try:
-            result = queue_app.get_user_queue(data['service_id'])
-        except Exception as e:
-            return json_response_error(e)
-
         return JsonResponse(result, safe=False)
     
+class QueueUserView(View):     
     # queue to a service
     def post(self, request):
         try:
@@ -89,7 +81,7 @@ class QueueServiceView(View): # DONE
 
         return JsonResponse(result, safe=False)
 
-    
+
 class GetAllServiceOnLocationView(View):    # DONE
     # get service based on location 
     def post(self, request):
@@ -121,23 +113,17 @@ class GetAllServiceOnLocationView(View):    # DONE
         return JsonResponse(result, safe=False)
 
 
-class GetAllServiceOnCompanyView(View): # DONE
+class GetAllOwnedServiceView(View): # DONE
     # get service based on company
     def get(self, request):
         try:
             user_data = get_session(request.headers.get('authorization', None))
         except:
             return json_response_error(NOT_LOGGED_IN)
-        
-        try:
-            data = json.loads(request.body)
-            company_id = data['company_id']
-        except Exception:
-            return json_response_error(INVALID_PARAM)
 
         service_app = ServiceApp(user_data['id'])
         try:
-            result = service_app.get_all_service_on_company_arr(data['company_id'])
+            result = service_app.get_all_service_owned_arr()
         except Exception as e:
             return json_response_error(e.message)
 
@@ -180,22 +166,20 @@ class CreateServiceView(View):  #DONE
 
         try:
             data = json.loads(request.body)
-            company_id = data['company_id'],
             category_id = data['category_id'],
             service_name = data['service_name'],
             description = data['description'],
             price = data['price'],
             open_time = data['open_time'],
             close_time = data['close_time'],
+            kabupaten_id=data['kabupaten_id'],
+            kabupaten_name=data['kabupaten_name'],
+            kecamatan_id=data['kecamatan_id'],
+            kecamatan_name=data['kecamatan_name'],
+            kelurahan_id=data['kelurahan_id'],
+            kelurahan_name=data['kelurahan_name'],
         except Exception:
             return json_response_error(INVALID_PARAM)
-    
-        # check is company owner
-        company_app = CompanyApp(user_data['id'])
-        is_owner = company_app.is_company_owner(data['company_id'])
-
-        if not is_owner:
-            return json_response_error("not_owner")
         
         # check valid category
         valid_category = is_valid_category(data['category_id'])
@@ -210,60 +194,6 @@ class CreateServiceView(View):  #DONE
         except Exception as e:
             return json_response_error(e)
 
-        if created:  
-            return JsonResponse({"message": SUCCESS})
-        else:
-            return json_response_error(DB_ERROR)
-
-
-class CompanyView(View):    # DONE
-    # get user company
-    def get(self, request):
-        try:
-            user_data = get_session(request.headers.get('authorization', None))
-        except:
-            return json_response_error(NOT_LOGGED_IN)
-
-        company_app = CompanyApp(user_data['id'])
-        try:
-            result = company_app.get_all_company_data_arr()
-        except Exception:
-            return json_response_error(DB_ERROR)
-        
-        return JsonResponse(result, safe=False)
-
-    # make new company
-    def post(self, request):
-        try:
-            user_data = get_session(request.headers.get('authorization', None))
-        except:
-            return json_response_error(NOT_LOGGED_IN)
-
-        try:
-            data = json.loads(request.body)
-            owner_id = user_data['id'],
-            name=data['name'],
-            email=data['email'],
-            address=data['address'],
-            kabupaten_id=data['kabupaten_id'],
-            kabupaten_name=data['kabupaten_name'],
-            kecamatan_id=data['kecamatan_id'],
-            kecamatan_name=data['kecamatan_name'],
-            kelurahan_id=data['kelurahan_id'],
-            kelurahan_name=data['kelurahan_name'],
-            phone_number=data['phone_number'],
-            description=data['description'],
-        except Exception:
-            return json_response_error(INVALID_PARAM)
-
-        created = False
-        
-        company_app = CompanyApp(user_data['id'])
-        try:
-            created = company_app.create_company(data)
-        except Exception as e:
-            return json_response_error(e)
-        
         if created:  
             return JsonResponse({"message": SUCCESS})
         else:
