@@ -1,6 +1,7 @@
 from django.db import models
 
-from oauth.models import UserProfile
+from oauth.models import District, UserProfile
+
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -10,42 +11,25 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class ServiceCategory(models.Model):
-    category = models.CharField(max_length=20)
-    
+class ServiceCategory(BaseModel):
+    name = models.CharField(max_length=20)
+
 
 class Service(BaseModel):
-    owner = models.ForeignKey(
-        UserProfile,
-        on_delete=models.CASCADE
-    )
-    category = models.ForeignKey(
-        ServiceCategory,
-        on_delete=models.CASCADE
-    )
+    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
     name = models.CharField(max_length=20)
-    description = models.TextField()
-    price = models.IntegerField()
+    address = models.TextField(null=True)
     open_time = models.TimeField()
     close_time = models.TimeField()
-    address = models.TextField(null=True)
+    description = models.TextField()
+    price = models.IntegerField()
     image = models.CharField(max_length=250, null=True)
-    kabupaten_id = models.IntegerField(default=0)
-    kabupaten_name = models.CharField(max_length=50, null=True)
-    kecamatan_id = models.IntegerField(default=0)
-    kecamatan_name = models.CharField(max_length=50, null=True)
-    kelurahan_id = models.IntegerField(default=0)
-    kelurahan_name = models.CharField(max_length=50, null=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL)
 
 
 class ServiceQueue(BaseModel):
-    service = models.ForeignKey(
-        Service,
-        on_delete=models.CASCADE
-    )
-    user = models.ForeignKey(
-        UserProfile,
-        on_delete=models.CASCADE
-    )
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     number = models.IntegerField(default=0)
     completed = models.BooleanField(default=False)
