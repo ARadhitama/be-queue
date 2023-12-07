@@ -1,6 +1,6 @@
 from django.db import models
 
-from oauth.models import UserProfile
+from oauth import models as M
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -11,12 +11,12 @@ class BaseModel(models.Model):
 
 
 class ServiceCategory(models.Model):
-    category = models.CharField(max_length=20)
+    name = models.CharField(max_length=20)
     
 
 class Service(BaseModel):
     owner = models.ForeignKey(
-        UserProfile,
+        M.UserProfile,
         on_delete=models.CASCADE
     )
     category = models.ForeignKey(
@@ -24,18 +24,16 @@ class Service(BaseModel):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=20)
-    description = models.TextField()
+    details = models.TextField()
     price = models.IntegerField()
     open_time = models.TimeField()
     close_time = models.TimeField()
     address = models.TextField(null=True)
     image = models.CharField(max_length=250, null=True)
-    kabupaten_id = models.IntegerField(default=0)
-    kabupaten_name = models.CharField(max_length=50, null=True)
-    kecamatan_id = models.IntegerField(default=0)
-    kecamatan_name = models.CharField(max_length=50, null=True)
-    kelurahan_id = models.IntegerField(default=0)
-    kelurahan_name = models.CharField(max_length=50, null=True)
+    province = models.ForeignKey(
+        M.Province, on_delete=models.SET_NULL, db_constraint=False
+    )
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, db_constraint=False)
 
 
 class ServiceQueue(BaseModel):
@@ -44,8 +42,7 @@ class ServiceQueue(BaseModel):
         on_delete=models.CASCADE
     )
     user = models.ForeignKey(
-        UserProfile,
+        M.UserProfile,
         on_delete=models.CASCADE
     )
-    number = models.IntegerField(default=0)
     completed = models.BooleanField(default=False)
