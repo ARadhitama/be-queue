@@ -1,0 +1,38 @@
+from api import models as M
+from oauth import models as oauth
+
+
+class StaticApp:
+    @staticmethod
+    def get_provinces() -> list:
+        return list(oauth.Province.objects.all())
+
+    @staticmethod
+    def get_cities(province: str) -> list:
+        return list(oauth.City.objects.filter(province_name=province).all())
+
+    @staticmethod
+    def get_categories() -> list:
+        return list(M.ServiceCategory.objects.all())
+
+    @staticmethod
+    def get_services_by_categories(category: str) -> list:
+        return list(M.Service.objects.filter(category_name=category).all())
+
+    def get_services_by_city(self, category: str, city: str) -> list:
+        services = self.get_service_by_categories(category)
+
+        res = []
+        for s in services:
+            if s.city.name == city:
+                res.append(s)
+        return res
+
+    def get_services_by_province(self, category: str, province: str) -> list:
+        services = self.get_service_by_categories(category)
+
+        res = []
+        for s in services:
+            if s.province.name == province:
+                res.append(s)
+        return res
