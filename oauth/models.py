@@ -1,7 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .managers import UserManager
-from api.global_var import ACCOUNT_TYPE
+
+
+class Province(models.Model):
+    name = models.CharField(max_length=50)
+
+
+class City(models.Model):
+    province = models.ForeignKey(
+        Province, on_delete=models.SET_NULL, db_constraint=False
+    )
+    name = models.CharField(max_length=50)
+
 
 class UserProfile(AbstractUser):
     date_joined = None
@@ -11,16 +22,15 @@ class UserProfile(AbstractUser):
     is_superuser = None
     last_login = None
     last_name = None
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=20)
-    email = models.EmailField(max_length=50)
-    kabupaten = models.IntegerField(default=0)
-    kecamatan = models.IntegerField(default=0)
-    kelurahan = models.IntegerField(default=0)
-    status_ban = models.BooleanField(default=False)
-    foto_ktp = models.CharField(max_length=250, blank=True, null=True)
-    tipe_akun = models.CharField(choices=ACCOUNT_TYPE, max_length=10, default='personal')
+    phone_number = models.CharField(max_length=20)
+    password = models.CharField(max_length=255)
+    province = models.ForeignKey(
+        Province, on_delete=models.SET_NULL, db_constraint=False
+    )
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, db_constraint=False)
 
     objects = UserManager()
 
