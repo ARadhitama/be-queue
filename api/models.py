@@ -13,6 +13,7 @@ class BaseModel(models.Model):
 
 class ServiceCategory(BaseModel):
     name = models.CharField(max_length=20)
+    image = models.CharField(max_length=255)
 
 
 class Service(BaseModel):
