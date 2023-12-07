@@ -24,8 +24,6 @@ class Service(BaseModel):
     price = models.IntegerField()
     open_time = models.TimeField()
     close_time = models.TimeField()
-    description = models.TextField()
-    price = models.IntegerField()
     image = models.CharField(max_length=250, null=True)
     province = models.ForeignKey(
         M.Province, on_delete=models.SET_NULL, db_constraint=False
