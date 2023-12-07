@@ -36,3 +36,7 @@ class StaticApp:
             if s.province.name == province:
                 res.append(s)
         return res
+
+    @staticmethod
+    def get_service_details(service_id: int) -> M.Service:
+        return M.Service.objects.filter(id=service_id).first()
