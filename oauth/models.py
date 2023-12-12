@@ -9,7 +9,7 @@ class Province(models.Model):
 
 class City(models.Model):
     province = models.ForeignKey(
-        Province, on_delete=models.SET_NULL, db_constraint=False
+        Province, on_delete=models.SET_NULL, db_constraint=False, null=True
     )
     name = models.CharField(max_length=50)
 
@@ -43,9 +43,9 @@ class UserProfile(AbstractUser):
     phone_number = models.CharField(max_length=20)
     password = models.CharField(max_length=255)
     province = models.ForeignKey(
-        Province, on_delete=models.SET_NULL, db_constraint=False
+        Province, on_delete=models.SET_NULL, db_constraint=False, null=True
     )
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, db_constraint=False)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, db_constraint=False, null=True)
 
     objects = UserManager()
 
