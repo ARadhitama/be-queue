@@ -27,12 +27,8 @@ class Service(BaseModel):
     open_time = models.TimeField()
     close_time = models.TimeField()
     image = models.CharField(max_length=250, null=True)
-    province = models.ForeignKey(
-        M.Province, on_delete=models.SET_NULL, db_constraint=False, null=True
-    )
-    city = models.ForeignKey(
-        M.City, on_delete=models.SET_NULL, db_constraint=False, null=True
-    )
+    province = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
 
 
 class ServiceQueue(BaseModel):
