@@ -77,12 +77,19 @@ WSGI_APPLICATION = 'queue_ta.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'tugas_akhir_queue',
-        'USER': 'postgres',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tugas_akhir_ariq',
+        'USER': 'root',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': 9000,
+        'HOST': '10.23.114.16',
+        'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'use_unicode': True,
+            'sql_mode': 'traditional',
+            'init_command': 'SET innodb_strict_mode=1',
+        },
+        'CONN_MAX_AGE': 60
     }
 }
 
