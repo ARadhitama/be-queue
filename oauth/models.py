@@ -4,24 +4,12 @@ from .managers import UserManager
 
 
 class Province(models.Model):
-    name = models.CharField(max_length=50)
-
-
-class City(models.Model):
-    province = models.ForeignKey(
-        Province, on_delete=models.SET_NULL, db_constraint=False, null=True
-    )
-    name = models.CharField(max_length=50)
-
-
-
-class Province(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
 
 class City(models.Model):
     province = models.ForeignKey(Province, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
 
 class District(models.Model):
@@ -37,15 +25,14 @@ class UserProfile(AbstractUser):
     is_superuser = None
     last_login = None
     last_name = None
+    email = None
 
+    username = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=20)
     phone_number = models.CharField(max_length=20)
     password = models.CharField(max_length=255)
-    province = models.ForeignKey(
-        Province, on_delete=models.SET_NULL, db_constraint=False, null=True
-    )
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, db_constraint=False, null=True)
+    province = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
 
     objects = UserManager()
 

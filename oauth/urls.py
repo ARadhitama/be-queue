@@ -4,6 +4,6 @@ from oauth import views
 
 urlpatterns = [
     path('login/', views.login_account, name='login'),
-    path('check_login/', views.check_account, name='check'),
-    path('create_user/', views.create_new_user, name='create'),
+    path('check_login/', views.check_login, name='check'),
+    path('signup/', views.signup, name='signup'),
 ]

@@ -29,12 +29,9 @@ def login_account(request):
     payload = {
         'id': user_check.id,
         'username': user_check.username,
-        'email': user_check.email,
-        'kabupaten': user_check.kabupaten,
-        'kecamatan': user_check.kecamatan,
-        'kelurahan': user_check.kelurahan,
-        'status_ban': user_check.status_ban,
-        'foto_ktp': user_check.foto_ktp
+        'phone_number': user_check.phone_number,
+        'province': user_check.province,
+        'city': user_check.city,
     }
 
     jwt_token = jwt.encode(payload, settings.JWT_SECRET, settings.JWT_ALGORITHM)
@@ -43,7 +40,7 @@ def login_account(request):
 
 
 @csrf_exempt
-def check_account(request):
+def check_login(request):
     try:
         jwt_token = request.headers.get('authorization', None)
     except Exception as e:
@@ -60,21 +57,19 @@ def check_account(request):
 
 
 @csrf_exempt
-def create_new_user(request):
+def signup(request):
     try:
         data = json.loads(request.body)
-        username = data['username']
         password = data['password']
-        email = data['email']
-        kabupaten = data['kabupaten']
-        kecamatan = data['kecamatan']
-        kelurahan = data['kelurahan']
-        tipe_akun = data['tipe_akun']
+        username = data['username']
+        phone_number = data['phone_number']
+        province = data['province']
+        city = data['city']
     except Exception as e:
         return JsonResponse({'message': str(e)})
 
     try:
-        UserProfile.objects.create_user(username, password, email, kabupaten, kecamatan, kelurahan, tipe_akun)
+        UserProfile.objects.create_user(username, password, phone_number, province, city)
     except IntegrityError:
         return JsonResponse({"message": "User already exist"}, status=400)
 
