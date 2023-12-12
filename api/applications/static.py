@@ -9,7 +9,7 @@ class StaticApp:
 
     @staticmethod
     def get_cities(province: str) -> list:
-        return list(oauth.City.objects.filter(province_name=province).all())
+        return list(oauth.City.objects.filter(province__name=province).all())
 
     @staticmethod
     def get_categories() -> list:

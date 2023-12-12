@@ -12,11 +12,6 @@ class City(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
 
-class District(models.Model):
-    City = models.ForeignKey(City, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
-
-
 class UserProfile(AbstractUser):
     date_joined = None
     first_name = None
