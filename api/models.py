@@ -11,7 +11,7 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class ServiceCategory(BaseModel):
+class ServiceCategory(models.Model):
     name = models.CharField(max_length=20)
     image = models.CharField(max_length=255)
 
