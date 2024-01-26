@@ -29,14 +29,10 @@ class Service(BaseModel):
     image = models.CharField(max_length=250, null=True)
     province = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
+    is_open = models.BooleanField(default=False)
 
 
 class ServiceQueue(BaseModel):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     user = models.ForeignKey(M.UserProfile, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
-
-
-class ServiceStatus(BaseModel):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    is_open = models.BooleanField(default=False)
