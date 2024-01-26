@@ -32,6 +32,7 @@ def login_account(request):
         'phone_number': user_check.phone_number,
         'province': user_check.province,
         'city': user_check.city,
+        'user_type': user_check.user_type
     }
 
     jwt_token = jwt.encode(payload, settings.JWT_SECRET, settings.JWT_ALGORITHM)
@@ -65,11 +66,12 @@ def signup(request):
         phone_number = data['phone_number']
         province = data['province']
         city = data['city']
+        user_type = data['user_type']
     except Exception as e:
         return JsonResponse({'message': str(e)})
 
     try:
-        UserProfile.objects.create_user(username, password, phone_number, province, city)
+        UserProfile.objects.create_user(username, password, phone_number, province, city, user_type)
     except IntegrityError:
         return JsonResponse({"message": "User already exist"}, status=400)
 

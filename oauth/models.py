@@ -28,6 +28,7 @@ class UserProfile(AbstractUser):
     password = models.CharField(max_length=255)
     province = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
+    user_type = models.BooleanField(default=False)
 
     objects = UserManager()
 
