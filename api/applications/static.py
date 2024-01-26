@@ -17,7 +17,7 @@ class StaticApp:
 
     @staticmethod
     def get_services_by_categories(category: str) -> list:
-        return list(M.Service.objects.filter(category_name=category).all())
+        return list(M.Service.objects.filter(category__name=category).all())
 
     def get_services_by_city(self, category: str, city: str) -> list:
         services = self.get_service_by_categories(category)
