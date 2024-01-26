@@ -23,8 +23,4 @@ def json_response_error(message):
 
 
 def is_valid_category(category_id):
-    category = ServiceCategory.objects.filter(id=category_id).values().all()
-
-    if not category:
-        return False
-    return True
+    return ServiceCategory.objects.filter(id=category_id).exists()
