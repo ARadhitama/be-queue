@@ -196,6 +196,22 @@ class CreateServiceView(ProtectedView):
         return JsonResponse({"message": "ok"})
 
 
+class EditServiceView(ProtectedView):
+    @method_decorator(api_check_owner)
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+        except Exception as e:
+            return json_response_error(INVALID_PARAM)
+
+        try:
+            ServiceApp(self.user["id"]).edit_service(data)
+        except Exception as e:
+            return json_response_error(e.message)
+
+        return JsonResponse({"message": "ok"})
+
+
 class DeleteServiceView(ProtectedView):
     def post(self, request, *args, **kwargs):
         try:

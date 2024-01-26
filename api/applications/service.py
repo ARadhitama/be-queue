@@ -18,8 +18,20 @@ class ServiceApp(Application):
         try:
             Service.objects.create(owner_id=self.id, **data)
         except Exception as e:
-            print(e)
             raise BaseError(e)
+        return
+
+    def edit_service(self, data):
+        service = Service.objects.filter(id=data.get("service_id")).first()
+        if not service:
+            raise BaseError("service_not_found")
+        if service.owner_id != self.id:
+            raise BaseError("not_service_owner")
+
+        for key, value in data.items():
+            setattr(service, key, value)
+        service.save()
+        return
 
     def delete_service(self, service_id: int):
         service = Service.objects.filter(id=service_id).first()
