@@ -111,8 +111,9 @@ class Services(ProtectedView):
                         "id": s.id,
                         "name": s.name,
                         "image": s.image,
+                        "is_open": s.is_open
                     }
-                    for s in res
+                    for s in sorted(res, key=lambda x: x.is_open, reverse=True)
                 ]
             }
         )
@@ -227,8 +228,8 @@ class DeleteServiceView(ProtectedView):
         return JsonResponse({"message": "ok"})
 
 
-class GetAllOwnedServiceView(View):
-    def get(self, request):
+class GetAllOwnedServiceView(ProtectedView):
+    def get(self, request, *args, **kwargs):
         try:
             user_data = get_session(request.headers.get("authorization", None))
         except:
@@ -241,6 +242,34 @@ class GetAllOwnedServiceView(View):
             return json_response_error(e.message)
 
         return JsonResponse(result, safe=False)
+
+
+class OpenService(ProtectedView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            service_id = int(data.get("service_id"))
+        except Exception:
+            return json_response_error(INVALID_PARAM)
+        try:
+            ServiceApp(self.user["id"]).open_service(service_id)
+        except Exception as e:
+            return json_response_error(e.message)
+        return JsonResponse({"message": "ok"})
+
+
+class CloseService(ProtectedView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            service_id = int(data.get("service_id"))
+        except Exception:
+            return json_response_error(INVALID_PARAM)
+        try:
+            ServiceApp(self.user["id"]).close_service(service_id)
+        except Exception as e:
+            return json_response_error(e.message)
+        return JsonResponse({"message": "ok"})
 
 
 # class QueueUserView(View):

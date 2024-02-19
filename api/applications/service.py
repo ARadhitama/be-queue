@@ -53,7 +53,26 @@ class ServiceApp(Application):
                 "service_id": service["id"],
                 "service_name": service["name"],
                 "service_image": service["image"],
+                "is_open": service["is_open"]
             }
             result.append(service_data)
 
-        return result
+        return sorted(result, key=lambda x: x["is_open"], reverse=True)
+
+    def open_service(self, service_id: int):
+        service = Service.objects.filter(id=service_id).first()
+        if not service:
+            raise BaseError("service_not_found")
+        if service.owner_id != self.id:
+            raise BaseError("not_service_owner")
+        service.is_open = True
+        service.save()
+    
+    def close_service(self, service_id: int):
+        service = Service.objects.filter(id=service_id).first()
+        if not service:
+            raise BaseError("service_not_found")
+        if service.owner_id != self.id:
+            raise BaseError("not_service_owner")
+        service.is_open = False
+        service.save()
