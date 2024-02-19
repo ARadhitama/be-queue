@@ -15,35 +15,15 @@ class UserApp(Application):
 
     @property
     def check_queue(self):
-        return M.ServiceQueue.objects.filter(user_id=self.id, completed=False).exists()
+        return M.ServiceQueue.objects.filter(user_id=self.id, completed=False).first()
 
-    def queue_to_service(self, service_id: int):
-        if self.check_queue:
-            raise BaseError("IN_QUEUE")
-        service_status = M.ServiceStatus.objects.filter(service_id=service_id).last()
-        if not service_status.is_open:
-            raise BaseError("SERVICE_CLOSED")
-
-        current_queue = (
-            M.ServiceQueue.objects.filter(
-                service_id=service_id, completed=False
-            ).count()
-            or 0
-        )
-        queue_number = current_queue + 1
-        M.ServiceQueue.objects.create(
-            service_id=service_id,
-            user=self.__id,
-            completed=False,
-        )
-        return queue_number
-
-    def get_user_queue(self, service_id: int):
-        if not self.check_queue:
+    def get_user_queue(self):
+        queue = self.check_queue
+        if not queue:
             return
 
         service_queue = M.ServiceQueue.objects.filter(
-            service_id=service_id, completed=False
+            service_id=queue.service.id, completed=False
         ).all()
         queue_num, queue_data = [
             (idx, queue)
@@ -80,14 +60,14 @@ class UserApp(Application):
             res.append(
                 {
                     "created_at": h.created_at,
-                    "category": h.service.category,
+                    "category": h.service.category.name,
                     "name": h.service.name,
                     "details": h.service.details,
                     "price": h.service.price,
                     "image": h.service.image,
-                    "province_name": h.service.province.name,
-                    "city": h.service.city.name,
-                    "status": True if h.completed else False,
+                    "province": h.service.province,
+                    "city": h.service.city,
+                    "status": h.status,
                 }
             )
 

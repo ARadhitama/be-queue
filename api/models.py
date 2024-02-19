@@ -36,3 +36,4 @@ class ServiceQueue(BaseModel):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     user = models.ForeignKey(M.UserProfile, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, blank=True, null=True)

@@ -17,9 +17,10 @@ urlpatterns = [
     path("edit_service/", csrf_exempt(views.EditServiceView.as_view())),
     path("open_service/", csrf_exempt(views.OpenService.as_view())),
     path("close_service/", csrf_exempt(views.CloseService.as_view())),
-    # DONE
-    path("check_queue/", csrf_exempt(views.CheckQueueView.as_view())),
     path("queue/", csrf_exempt(views.Queue.as_view())),
+    path("check_queue/", csrf_exempt(views.CheckQueueView.as_view())),
+    path("cancel_queue/", csrf_exempt(views.CancelQueueView.as_view())),
     path("history/", csrf_exempt(views.HistoryView.as_view())),
-    path("cancel/", csrf_exempt(views.CancelQueueView.as_view())),
+    path("owned_services_details/", csrf_exempt(views.GetOwnedServiceDetailView.as_view())),
+    path("process_queue/", csrf_exempt(views.ProcessQueueView.as_view())),
 ]

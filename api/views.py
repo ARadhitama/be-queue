@@ -140,44 +140,37 @@ class ServiceDetailsView(ProtectedView):
                 "image": res.image,
                 "province_name": res.province,
                 "city": res.city,
-                "current_queue_number": 70,  # TODO
+                "current_queue_number": ServiceApp(self.user["id"]).get_current_queue(service_id)
             }
         )
 
 
-class Queue(View):
-    def post(self, request):
+class Queue(ProtectedView):
+    def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
             service_id = data["service_id"]
         except Exception:
             return json_response_error(INVALID_PARAM)
-        res = UserApp(self.user["id"]).queue_to_service(service_id)
-        return JsonResponse({"queue_num": res}, safe=False)
-
-
-class CheckQueueView(View):
-    def post(self, request):
+        
         try:
-            data = json.loads(request.body)
-            service_id = data["service_id"]
-        except Exception:
-            return json_response_error(INVALID_PARAM)
-
-        res = UserApp(self.user["id"]).get_user_queue(service_id)
-
-        return JsonResponse({"data": res}, safe=False)
+            res = ServiceApp(self.user["id"]).queue(service_id)
+        except Exception as e:
+            return json_response_error(e.message)
+        return JsonResponse({}, safe=False)
 
 
-class CancelQueueView(View):
-    def post(self, request):
+class CheckQueueView(ProtectedView):
+    def get(self, request, *args, **kwargs):
+        return JsonResponse({"data": UserApp(self.user["id"]).get_user_queue()}, safe=False)
+
+
+class CancelQueueView(ProtectedView):
+    def get(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
-        except Exception:
-            return json_response_error(INVALID_PARAM)
-
-        res = UserApp(self.user["id"]).cancel_queue()
-
+            ServiceApp(self.user["id"]).cancel_queue()
+        except Exception as e:
+            return json_response_error(e.message)
         return JsonResponse({}, safe=False)
 
 
@@ -231,19 +224,46 @@ class DeleteServiceView(ProtectedView):
 class GetAllOwnedServiceView(ProtectedView):
     def get(self, request, *args, **kwargs):
         try:
-            user_data = get_session(request.headers.get("authorization", None))
-        except:
-            return json_response_error(NOT_LOGGED_IN)
-
-        service_app = ServiceApp(user_data["id"])
-        try:
-            result = service_app.get_owned_services()
+            result = ServiceApp(self.user["id"]).get_owned_services()
         except Exception as e:
             return json_response_error(e.message)
 
         return JsonResponse(result, safe=False)
 
 
+class GetOwnedServiceDetailView(ProtectedView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            service_id = int(data.get("service_id"))
+        except Exception:
+            return json_response_error(INVALID_PARAM)
+
+        try:
+            result = ServiceApp(self.user["id"]).get_owned_service_detail(service_id)
+        except Exception as e:
+            return json_response_error(e.message)
+
+        return JsonResponse(result, safe=False)
+
+
+class ProcessQueueView(ProtectedView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            service_id = int(data.get("service_id"))
+            action = data.get("action")
+        except Exception:
+            return json_response_error(INVALID_PARAM)
+
+        try:
+            ServiceApp(self.user["id"]).process_queue(service_id, action)
+        except Exception as e:
+            return json_response_error(e.message)
+
+        return JsonResponse({}, safe=False)
+    
+    
 class OpenService(ProtectedView):
     def post(self, request, *args, **kwargs):
         try:
@@ -272,55 +292,7 @@ class CloseService(ProtectedView):
         return JsonResponse({"message": "ok"})
 
 
-# class QueueUserView(View):
-#     # queue to a service
-#     def post(self, request):
-#         try:
-#             user_data = get_session(request.headers.get("authorization", None))
-#         except:
-#             return json_response_error(NOT_LOGGED_IN)
-
-#         try:
-#             data = json.loads(request.body)
-#             service_id = data["service_id"]
-#         except Exception:
-#             return json_response_error(INVALID_PARAM)
-
-#         queue_app = QueueApp(user_data["id"])
-
-#         try:
-#             result = queue_app.queue_to_service(data["service_id"])
-#         except Exception as e:
-#             return json_response_error(e)
-
-#         return JsonResponse({"queue_number": result})
-
-
-# class QueueServiceView(View):  # DONE
-#     # get current queue
-#     def post(self, request):
-#         try:
-#             user_data = get_session(request.headers.get("authorization", None))
-#         except:
-#             return json_response_error(NOT_LOGGED_IN)
-
-#         try:
-#             data = json.loads(request.body)
-#             service_id = data["service_id"]
-#         except Exception:
-#             return json_response_error(INVALID_PARAM)
-
-#         queue_app = QueueApp(user_data["id"])
-
-#         try:
-#             result = queue_app.get_current_queue(data["service_id"])
-#         except Exception as e:
-#             return json_response_error(e)
-
-#         return JsonResponse(result, safe=False)
-
-
 class HistoryView(ProtectedView):
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         res = UserApp(self.user["id"]).history()
         return JsonResponse({"history": res})
