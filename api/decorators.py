@@ -20,7 +20,7 @@ def api_check_login(f):
 def api_check_owner(f):
     @wraps(f)
     def wrapper(request, user_data, *args, **kwargs):
-        if not user_data["user_type"]:
+        if not user_data["is_owner"]:
             return json_response_error(NOT_OWNER)
         return f(request, *args, **kwargs)
 

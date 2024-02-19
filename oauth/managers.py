@@ -3,13 +3,13 @@ from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, password, phone_number, province, city, user_type, **kwargs):
+    def create_user(self, username, password, phone_number, province, city, is_owner, **kwargs):
         user = self.model(
             username=username,
             phone_number=phone_number,
             province=province,
             city=city,
-            user_type=user_type,
+            is_owner=is_owner,
             **kwargs
         )
         user.set_password(password)
