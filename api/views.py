@@ -37,7 +37,7 @@ class Info(ProtectedView):
         return JsonResponse(res, safe=False)
 
 
-class ProvinceView(ProtectedView):
+class ProvinceView(View):
     def get(self, request, *args, **kwargs):
         return JsonResponse(
             {
@@ -51,12 +51,10 @@ class ProvinceView(ProtectedView):
         )
 
 
-class CityView(ProtectedView):
-    def post(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-            province = data["province"]
-        except Exception:
+class CityView(View):
+    def get(self, request, *args, **kwargs):
+        province = request.GET.get('province', "")
+        if not province:
             return json_response_error(INVALID_PARAM)
 
         return JsonResponse(

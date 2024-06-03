@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from corsheaders.defaults import default_headers
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'oauth',
     'api'
 ]
@@ -50,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'queue_ta.urls'
@@ -137,3 +141,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'oauth.UserProfile'
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = default_headers
