@@ -1,1 +1,1 @@
-python manage.py runserver 10.23.114.108:2097
+python manage.py runserver {ip:port}

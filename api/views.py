@@ -89,27 +89,27 @@ class Services(ProtectedView):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
-            category = data.get("category", "Goverment")
+            category = request.GET.get('category', "")
             city = data.get("city", None)
             province = data.get("province", None)
         except Exception:
             return json_response_error(INVALID_PARAM)
 
         if city:
-            res = StaticApp.get_services_by_city(category, city)
+            res = StaticApp().get_services_by_city(category, city)
         elif province:
-            res = StaticApp.get_services_by_province(category, province)
+            res = StaticApp().get_services_by_province(category, province)
         else:
             res = StaticApp.get_services_by_categories(category)
-
         return JsonResponse(
             {
                 "services": [
                     {
-                        "id": s.id,
-                        "name": s.name,
-                        "image": s.image,
-                        "is_open": s.is_open
+                        "service_id": s.id,
+                        "service_name": s.name,
+                        "service_image": s.image,
+                        "is_open": s.is_open,
+                        "category": s.category_id
                     }
                     for s in sorted(res, key=lambda x: x.is_open, reverse=True)
                 ]
@@ -128,15 +128,18 @@ class ServiceDetailsView(ProtectedView):
         res = StaticApp.get_service_details(service_id)
         return JsonResponse(
             {
-                "category": res.category.name,
+                "service_id": service_id,
+                "category_id": res.category.id,
+                "category_name": res.category.name,
                 "name": res.name,
                 "details": res.details,
                 "address": res.address,
+                "phone": res.phone,
                 "price": res.price,
                 "open_time": res.open_time,
                 "close_time": res.close_time,
                 "image": res.image,
-                "province_name": res.province,
+                "province": res.province,
                 "city": res.city,
                 "current_queue_number": ServiceApp(self.user["id"]).get_current_queue(service_id)
             }

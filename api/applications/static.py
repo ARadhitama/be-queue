@@ -20,20 +20,20 @@ class StaticApp:
         return list(M.Service.objects.filter(category__name=category).all())
 
     def get_services_by_city(self, category: str, city: str) -> list:
-        services = self.get_service_by_categories(category)
+        services = self.get_services_by_categories(category)
 
         res = []
         for s in services:
-            if s.city.name == city:
+            if s.city == city:
                 res.append(s)
         return res
 
     def get_services_by_province(self, category: str, province: str) -> list:
-        services = self.get_service_by_categories(category)
+        services = self.get_services_by_categories(category)
 
         res = []
         for s in services:
-            if s.province.name == province:
+            if s.province == province:
                 res.append(s)
         return res
 

@@ -37,6 +37,7 @@ class UserApp(Application):
             "service_address": queue_data.service.address,
             "service_price": queue_data.service.price,
             "service_details": queue_data.service.details,
+            "service_image": queue_data.service.image,
             "user_queue_number": queue_num,
         }
 

@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'tugas_akhir_ariq',
         'USER': 'root',
         'PASSWORD': 'admin',
-        'HOST': '10.23.114.16',
+        'HOST': '{ip}',
         'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',

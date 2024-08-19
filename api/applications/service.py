@@ -15,6 +15,7 @@ class ServiceApp(Application):
         valid_category = is_valid_category(data["category_id"])
         if not valid_category:
             raise BaseError("wrong_category")
+        del data["current_queue_number"]
         try:
             Service.objects.create(owner_id=self.id, **data)
         except Exception as e:
@@ -53,7 +54,8 @@ class ServiceApp(Application):
                 "service_id": service["id"],
                 "service_name": service["name"],
                 "service_image": service["image"],
-                "is_open": service["is_open"]
+                "is_open": service["is_open"],
+                "category": service["category_id"]
             }
             result.append(service_data)
 
@@ -67,9 +69,11 @@ class ServiceApp(Application):
             raise BaseError("not_owner")
         queue_num = ServiceQueue.objects.filter(service_id=service_id, completed=False).count()
         return {
+            "service_id": service_id,
+            "service_name": first_queue.service.name,
             "customer_name": first_queue.user.username,
             "phone_number": first_queue.user.phone_number,
-            "queue_num": queue_num
+            "in_queue": queue_num
         }
 
     def open_service(self, service_id: int):
